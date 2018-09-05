@@ -1,3 +1,14 @@
+/**
+*  Course: CMPS 2143 - OOP
+*  Assignment: A02
+*  Purpose: Create two lists and combine them together and
+*  find an int value in a list and return it as if the list
+*  were an array
+* 
+*  @author Terry Griffin (comments by Tyler Roop)
+*  @version 1.1
+*/
+
 #include <iostream>
 
 using namespace std;
@@ -33,7 +44,14 @@ class List
         Head = Tail = NULL;
         Size = 0;
     }
-
+    
+    /**
+    *   Adds a new node onto the end of a list
+    *
+    *   @param {int} val : Value to be entered as
+    *                      node's int
+    *   @return {void}
+    */
     void Push(int val)
     {
         // allocate new memory and init node
@@ -51,6 +69,13 @@ class List
         Size++;
     }
 
+    /**
+    *   Adds a new node onto the start of a list
+    *
+    *   @param {int} val : Value to be entered as
+    *                      node's int
+    *   @return {void}
+    */
     void Insert(int val)
     {
         // allocate new memory and init node
@@ -66,12 +91,22 @@ class List
         }
         Size++;
     }
-
+    
+    /**
+    *   Prints the last item in a list
+    *
+    *   @return {void}
+    */
     void PrintTail()
     {
         cout << Tail->x << endl;
     }
-
+    
+    /**
+    *   Prints a list
+    *
+    *   @return {void}
+    */
     string Print()
     {
         Node *Temp = Head;
@@ -93,6 +128,14 @@ class List
         return 0; //
     }
 
+    /**
+    *   concatenates two lists
+    *
+    *   @param {const List &} Rhs : List on right hand side of
+    *                               addition sign to be concatenated
+    *
+    *   @return {List} : A list containing both of the concatenated lists
+    */
     List operator+(const List &Rhs)
     {
         // Create a new list that will contain both when done
@@ -121,9 +164,15 @@ class List
         // Return new concatenated version of lists
         return NewList;
     }
-
-    // Implementation of [] operator.  This function returns an
-    // int value as if the list were an array.
+    
+    /**
+    *   Implementation of [] operator.  This function returns an
+    *   int value as if the list were an array.
+    *   
+    *   @param {int} index : Place in list that desired value is located
+    *
+    *   @return {int} : desired value
+    */
     int operator[](int index)
     {
         Node *Temp = Head;
@@ -144,6 +193,14 @@ class List
         }
     }
 
+    /**
+    *   Implementation of cout to be able to print lists
+    *   
+    *   @param {ostream &} os : outstream that prints with cout
+    *   @param {List} L: List to be printed
+    *
+    *   @return {ostream &} : returns address of ostream to be printed with cout
+    */
     friend ostream &operator<<(ostream &os, List L)
     {
         os << L.Print();
@@ -158,21 +215,28 @@ int main(int argc, char **argv)
 
     for (int i = 0; i < 25; i++)
     {
+        // Fills L1 with values from 0 to 24 in ascending order
         L1.Push(i);
     }
 
     for (int i = 50; i < 100; i++)
     {
+        // Fills L2 with values from 50 to 99 in ascending order
         L2.Push(i);
     }
 
     //cout << L1 << endl;
+    
+    // Prints the last value in both lists
     L1.PrintTail();
     L2.PrintTail();
 
+    // concatenates L1 and L2 into L3
     List L3 = L1 + L2;
+    // prints L3
     cout << L3 << endl;
 
+    // prints the fifth value in L3
     cout << L3[5] << endl;
     return 0;
 }
