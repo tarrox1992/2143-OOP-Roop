@@ -1,0 +1,6 @@
+There's nothing there!
+13 31 73
+14053
+10
+Error, this vector is not for strings
+Press any key to continue . . .
