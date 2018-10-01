@@ -237,21 +237,14 @@ public:
 			}
 			else
 			{
-				if (max == rhsSize)
-				{
-					newVector.pushBack(rhs.vPtr[i]);
-				}
-				else
-				{
-					newVector.pushBack(vPtr[i]);
-				}
+				newVector.pushBack(0);
 			}
 		}
 		return newVector;
 	}
 
 	// implemenation of == to check if two vectors are equal
-	bool operator==(myVector& rhs){
+	bool operator==(myVector& rhs) {
 		bool isEqual = 1;
 		if (index == rhs.index)
 		{
