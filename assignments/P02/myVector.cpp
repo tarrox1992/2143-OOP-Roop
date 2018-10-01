@@ -5,7 +5,8 @@
 *
 *  @author Tyler Roop
 *  @version 1.1 10/01/2018
-*  @github repo: https://github.com/tarrox1992/2143-OOP-Roop/blob/master/assignments/P02/
+*  @github repo:
+*	https://github.com/tarrox1992/2143-OOP-Roop/blob/master/assignments/P02/
 */
 
 #include <iostream>
