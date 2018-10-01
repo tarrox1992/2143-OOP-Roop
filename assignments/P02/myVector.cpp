@@ -76,5 +76,7 @@ int main() {
 	V8.pushBack(Ary, size);
 	cout << V8 << endl;
 
-  return 0;
+	system("pause");
+
+	return 0;
 }
