@@ -1,0 +1,12 @@
+41 67 34 0 69  V1
+24 78 58 62 64 5 45  V2
+65 145 92 62 133 5 45  added vectors V3 and V7
+17 -11 -24 -62 5 5 45  subtracted vectors V4
+984 5226 1972 0 4416 5 45  multiplied vectors V5
+1 0 0 0 1 5 45  divided vectors V6
+V1 and V2 are not equal
+V3 and V7 are equal
+65 145 92 62 133 5 45
+65 145 92 62 133 5 45
+Equalized vectors V8
+65 145 92 62 133 5 45 69 40
