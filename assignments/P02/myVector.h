@@ -5,7 +5,8 @@
 *
 *  @author Tyler Roop
 *  @version 1.1 10/01/2018
-*  @github repo: https://github.com/tarrox1992/2143-OOP-Roop/blob/master/assignments/P02/
+*  @github repo:
+*	https://github.com/tarrox1992/2143-OOP-Roop/blob/master/assignments/P02/
 */
 
 #include <iostream>
@@ -34,8 +35,13 @@ public:
 	void size(int);
 	int vSize();
 
-	// Implementation of [] operator.  This function must return a 
-	// reference as array element can be put on left side 
+	/**
+	* Function operator[]
+	*		Overloads [] to allow access to specific elements in a myVector
+	*		as if it were an array
+	* @param {int} i: element in vector that is being accessed
+	* @return myVector.vPtr[i]
+	*/
 	int& operator[](int i)
 	{
 		if (i >= maxSize)
@@ -58,8 +64,13 @@ public:
 		return os;
 	}
 
-	// implementation of + operator to add vectors
-	// acts as if the smaller vector has extra ints filled with 0
+	/**
+	* Function operator+
+	*   Adds elements in two vectors by eachother and does nothing with
+	*   extra elements in larger vector
+	* @param {myVector&} rhs: vector whose elements are being subtracted
+	* @return myVector
+	*/
 	myVector operator+(const myVector& rhs) {
 
 		//rhs = vector on the right of the + sign
@@ -105,8 +116,13 @@ public:
 		return newVector;
 	}
 
-	// implemenation of - operator to subtract vectors
-	// acts as if the smaller vector has extra ints filled with 0
+	/**
+	* Function operator-
+	*   Subtracts elements in two vectors by eachother and does nothing with
+	*   extra elements in larger vector
+	* @param {myVector&} rhs: vector whose elements are being subtracted
+	* @return myVector
+	*/
 	myVector operator-(const myVector& rhs) {
 
 		//rhs = vector on the right of the - sign
@@ -152,8 +168,13 @@ public:
 		return newVector;
 	}
 
-	// implemenation of * to multiply vectors
-	// if vectors are different sizes, drops extra elements of larger vector
+	/**
+	* Function operator*
+	*   Multiplies elements in two vectors by eachother and drops extra
+	*   elements in larger vector
+	* @param {myVector&} rhs: vector whose elements are multiplied by
+	* @return myVector
+	*/
 	myVector operator*(const myVector& rhs) {
 
 		//rhs = vector on the right of the * sign
@@ -185,8 +206,13 @@ public:
 		return newVector;
 	}
 
-	// implementation of / to divide vectors
-	// if vectors are different sizes, drops extra elements of larger vector
+	/**
+	* Function operator/
+	*   Divides elements in two vectors by eachother and drops extra elemnts
+	*   in larger vector
+	* @param {myVector&} rhs: vector whose elements are in denominator
+	* @return myVector
+	*/
 	myVector operator/(const myVector& rhs) {
 
 		//rhs = vector on the right of the / sign
@@ -224,7 +250,13 @@ public:
 		return newVector;
 	}
 
-	// implemenation of == to check if two vectors are equal
+	/**
+	* Function operator==
+	*   Assigns the value of one vector equal to an exact copy
+	* @param {myVector&} rhs: vector that we are checking the left hand side
+	*						  against
+	* @return bool is true if values are equal or false if not
+	*/
 	bool operator==(myVector& rhs) {
 		bool isEqual = 1;
 		if (index == rhs.index)
@@ -239,7 +271,12 @@ public:
 		return isEqual;
 	}
 
-	// implemenation of = to assign the value of one vector to another
+	/**
+	* Function operator=
+	*   Assigns the value of one vector equal to an exact copy
+	* @param {myVector&} equalizer: initial vector that is being copied
+	* @return void
+	*/
 	void operator=(myVector& equalizer)
 	{
 		vPtr = new int[equalizer.maxSize];
@@ -252,8 +289,6 @@ public:
 		}
 	}
 };
-
-
 
 /**
 * Function constructor
