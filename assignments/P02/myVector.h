@@ -35,7 +35,7 @@ public:
 	int vSize();
 
 	// Implementation of [] operator.  This function must return a 
-	// refernce as array element can be put on left side 
+	// reference as array element can be put on left side 
 	int& operator[](int i)
 	{
 		if (i >= maxSize)
@@ -153,7 +153,7 @@ public:
 	}
 
 	// implemenation of * to multiply vectors
-	// acts as if the smaller vector has extra ints filled with 1
+	// if vectors are different sizes, drops extra elements of larger vector
 	myVector operator*(const myVector& rhs) {
 
 		//rhs = vector on the right of the * sign
@@ -175,33 +175,18 @@ public:
 			min = rhsSize;
 		}
 
-		// create a new vector with the bigger size
-		myVector newVector(max);
+		// create a new vector with the smaller size
+		myVector newVector(min);
 
-		for (int i = 0; i < max; i++)
+		for (int i = 0; i < min; i++)
 		{
-			if (i < min)
-			{
-				newVector.pushBack(rhs.vPtr[i] * vPtr[i]);
-			}
-			else
-			{
-				if (max == rhsSize)
-				{
-					newVector.pushBack(rhs.vPtr[i]);
-				}
-				else
-				{
-					newVector.pushBack(vPtr[i]);
-				}
-			}
+			newVector.pushBack(rhs.vPtr[i] * vPtr[i]);
 		}
 		return newVector;
 	}
 
 	// implementation of / to divide vectors
-	// acts as if the smaller vector has extra ints filled with 0
-	// checks if trying to divide by 0, and if so fills spot with 0
+	// if vectors are different sizes, drops extra elements of larger vector
 	myVector operator/(const myVector& rhs) {
 
 		//rhs = vector on the right of the / sign
@@ -223,22 +208,18 @@ public:
 			min = rhsSize;
 		}
 
-		// create a new vector with the bigger size
+		// create a new vector with the smaller size
 		myVector newVector(max);
 
-		for (int i = 0; i < max; i++)
+		for (int i = 0; i < min; i++)
 		{
-			if (i < min)
-			{
 				if (rhs.vPtr[i] != 0)
 					newVector.pushBack(vPtr[i] / rhs.vPtr[i]);
 				else
-					newVector.pushBack(0);
-			}
-			else
-			{
-				newVector.pushBack(0);
-			}
+				{
+					cout << "Error, cannot divide by 0";
+					exit;
+				}
 		}
 		return newVector;
 	}
