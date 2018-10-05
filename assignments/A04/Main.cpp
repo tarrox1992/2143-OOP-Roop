@@ -1,3 +1,13 @@
+/**
+*  Course: CMPS 2143 - OOP
+*
+*  Purpose: add frameRate and frameCount to struct gameOfLife
+*
+*  @author Tyler Roop
+*  @version 1.1 10/05/18
+*  @github repo: https://github.com/tarrox1992/2143-OOP-Roop/tree/master/assignments/A04
+*/
+
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
