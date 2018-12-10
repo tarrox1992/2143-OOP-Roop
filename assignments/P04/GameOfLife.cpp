@@ -8,28 +8,45 @@
 *  @github repo: https://github.com/tarrox1992/2143-OOP-Roop/tree/master/assignments/P04
 */
 
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 
-using namespace std;
+#define CELLSIZE 10
+
+using namespace sf;
 
 /**
 * GOLCell : A single instance of a cell in a Game of Life array
+* @Extends:
+*   sf::Drawable
 * @Data-Elements:
-* 	bool alive		// is cell alive or not
-*	int Neighbors	// how many neighbors cell has
+* 	RectangleShape rect;	// sfml rectangle type
+* 	bool alive;		// is cell alive or not
 * @Methods:
-* 	GOLCell() initializes cell to dead with no neighbors
+* 	void draw(RenderTarget& target, RenderStates state) const
 */
-struct GOLCell
-{	bool alive;
+struct GOLCell : public Drawable
+{
+	RectangleShape rect;
+	bool alive;
 	int Neighbors;
 	GOLCell()
 	{
+		rect.setSize(Vector2f(CELLSIZE, CELLSIZE));
 		alive = false;
 		Neighbors = 0;
+	}
+protected:
+	/**
+	* void draw: draws an SFML shape to an SFML window.
+	*/
+	void draw(RenderTarget& target, RenderStates state) const // means this method won't change 
+															  // anything...	
+	{
+		target.draw(rect);
 	}
 };
 
@@ -37,8 +54,9 @@ struct GOLCell
 * gameOfLife : A single instance of board of Game of Life
 * @Data-Elements:
 * 	GOLCell** World		// 2d array of GOLCell
-*	int Rows			// how many rows in array
-*	int Cols			// how many columns in array
+*	int Rows			// how many rows in array/gameboard
+*	int Cols			// how many columns in array/gameboard
+*	RenderWindow &WindowRef		// reference to sfml window so we can draw it
 * @Methods:
 * 	gameOfLife() initializes game with no rows or columns
 *	gameOfLife(int C, int R) initializes game of life with R rows and C columns
@@ -47,24 +65,25 @@ struct GOLCell
 * 	void ApplyRules()	Applies the rules of the game of life to the world
 *	void Print(std::string First, std::string Last, std::string OFile, int C, int R)
 *		Prints final board to outfile
+*	void printBoard	prints game to sfml window
 */
 class gameOfLife
 {
 private:
-
-	GOLCell** World;
+	GOLCell **World;
 	int Rows;
 	int Cols;
+	RenderWindow &WindowRef;
 
 public:
 
-	gameOfLife()
+	gameOfLife(RenderWindow &thatWindow) : WindowRef(thatWindow)
 	{
 		Rows = 0;
 		Cols = 0;
 	}
 
-	gameOfLife(int C, int R)
+	gameOfLife(RenderWindow &thatWindow, int C, int R) : WindowRef(thatWindow)
 	{
 		Rows = R;
 		Cols = C;
@@ -75,19 +94,14 @@ public:
 		}
 	}
 
-	/**
-	* Function: Populate cell
-	* 		sets cell to alive or dead
-	* @param:
-	*		int i row of cell
-	*		int j column of cell
-	*		int k whether cell is alive or dead
-	* @returns:
-	*       None
-	*/
 	void PopulateCell(int i, int j, int k)
 	{
 		World[i][j].alive = k;
+		if (World[i][j].alive)
+		{
+			World[i][j].rect.setFillColor(Color::Magenta);
+			World[i][j].rect.setPosition(j * CELLSIZE, i * CELLSIZE);
+		}
 	}
 
 	/**
@@ -207,12 +221,15 @@ public:
 					World[i][j].alive = false;
 				// if a cell has exactly 3 neighbors it comes to life or stays alive
 				else if (World[i][j].Neighbors == 3)
+				{
 					World[i][j].alive = true;
+					World[i][j].rect.setFillColor(Color::Magenta);
+					World[i][j].rect.setPosition(j * CELLSIZE, i * CELLSIZE);
+				}
 				// if a cell has exactly 2 neighbors it either stays alive or stays dead
 			}
 		}
 	}
-
 	/**
 	* Function: Print
 	* 		Prints final board to outfile
@@ -222,20 +239,44 @@ public:
 	*		string OFile	name of output file
 	*		int C			number of columns in game board
 	*		int R			number of rows in game board
+	*		int Gens		number of generations game ran for
 	* @returns:
 	*       None
 	*/
-	void Print(std::string First, std::string Last, std::string OFile, int C, int R)
+	void Print(std::string First, std::string Last, std::string OFile, int C, int R, int Gens)
 	{
 		int i, j;
 		std::ofstream outfile;
 		outfile.open(OFile);
 		outfile << First << ' ' << Last << "\n\n";
+		outfile << "Generation " << Gens << '\n';
 		for (i = 0; i < Rows; i++) {
 			for (j = 0; j < Cols; j++) {
 				outfile << World[i][j].alive << ' ';
 			}
 			outfile << '\n';
+		}
+	}
+
+	/**
+		* Function: printBoard
+		* 	Prints board to an sfml window
+		* @param:
+		*	None
+		* @returns:
+		*       None
+		*/
+	void printBoard()
+	{
+		for (int i = 0; i < Rows; i++)
+		{
+			for (int j = 0; j < Cols; j++)
+			{
+				if (World[i][j].alive)
+				{
+					WindowRef.draw(World[i][j].rect);
+				}
+			}
 		}
 	}
 };
@@ -258,7 +299,7 @@ void printUsage() {
 * 		Pulls filename from command line parameter
 * @param:
 *		char** argv		array holding file name
-		int i			size of said array
+int i			size of said array
 * @returns:
 *       string Filename		Name of requested file in readable string form
 */
@@ -319,12 +360,17 @@ void RunGame(std::string IFile, int RunGen, std::string OFile);
 
 int main(int argc, char** argv)
 {
+	// Prints error if parameter count incorrect
 	if (argc < 4) {
 		printUsage();
 		exit(0);
 	}
+
+	// strings to hold input and output filenames
 	std::string IFile, OFile;
-	int RunGen = 30;
+
+	// int to hold run generation
+	int RunGen;
 
 	IFile = FileFinder(argv, 1);
 	RunGen = GenerationReader(argv, 2);
@@ -336,30 +382,76 @@ int main(int argc, char** argv)
 
 void RunGame(std::string IFile, int RunGen, std::string OFile)
 {
+	// Ints to hold number of columns and rows
 	int Cols, Rows;
-	int i = 0, j = 0, k;
+
+	// ints to help navigate array holding gamecells, framerate, and generation count
+	int i = 0, j = 0, k, FR = 1000000000, GenCount = 0;
+
+	// hold temporary number from file to determine initial condition
 	char temp;
+
+	// strings hold names from input file
 	std::string First, Last;
+
+	// input file variables
 	std::ifstream infile;
 	infile.open(IFile);
-	infile >> First >> Last >> Cols >> Rows;
-	gameOfLife Gol(Cols, Rows);
 
-	for (i = 0; i < Rows; i++)
-	{
-		for (j = 0; j < Cols; j++)
-		{
+	// reveives names and number of columns and rows from file
+	infile >> First >> Last >> Cols >> Rows;
+
+	// sfml variables to run display window
+	RenderWindow window(VideoMode(Cols * 10, Rows * 10), "Game of Life");
+	Vector2u size = window.getSize();
+	gameOfLife Gol(window, Cols, Rows);
+
+	// pulls initial conditions from input file
+	for (i = 0; i < Rows; i++) {
+		for (j = 0; j < Cols; j++) {
 			infile >> temp;
 			k = temp - '0';
 			Gol.PopulateCell(i, j, k);
 		}
 	}
 
-	while (RunGen)
+	while (window.isOpen())
 	{
-		Gol.countNeighbors();
-		Gol.ApplyRules();
-		RunGen--;
+		Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == Event::Closed)
+				window.close();
+		}
+
+		// prints initial and final conditions to screen
+		Gol.printBoard();
+		window.display();
+		window.clear();
+		
+		// runs game of life for a number of generations
+		while (RunGen)
+		{
+			// loop slows down program to be visible to human
+			if (!FR)
+			{
+				// functions to play and display game
+				Gol.countNeighbors();
+				Gol.ApplyRules();
+				window.clear();
+				Gol.printBoard();
+				window.display();
+
+				// counts generations
+				RunGen--;
+				GenCount++;
+
+				// resets framerate variable
+				FR = 1000000000;
+			}
+			// decrements framerate variable
+			else FR--;
+		}
 	}
-	Gol.Print(First, Last, OFile, Cols, Rows);
+
+	Gol.Print(First, Last, OFile, Cols, Rows, GenCount);
 }
